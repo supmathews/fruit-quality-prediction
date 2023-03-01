@@ -56,8 +56,8 @@ if __name__ == '__main__':
         print('File already exists') """
 
     param_grid = [
-        {'C':[1, 10, 100, 1000], 'kernel':['linear']},
-        {'C':[1, 10, 100, 1000], 'gamma':[0.001, 0.0001] ,'kernel':['rbf']}
+        {'C':[1, 10, 100, 1000], 'kernel':['linear', 'sigmoid']},
+        {'C':[1, 10, 100, 1000], 'gamma':[0.001, 0.0001, 'auto'] ,'kernel':['rbf', 'sigmoid']}
     ]
     svc = svm.SVC()
     clf = GridSearchCV(svc, param_grid=param_grid, verbose=1)
