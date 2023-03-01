@@ -1,6 +1,7 @@
 #-----------Libraries for feature extraction----------#
 import os
 import numpy as np
+from numpy.linalg import norm
 from PIL import Image
 import pickle
 import matplotlib.pyplot as plt
@@ -14,6 +15,23 @@ from skimage.io import imread
 from skimage.transform import resize
 
 CATEGORIES = ['no_split', 'split']
+
+def save_uploaded_file(uploaded_file):
+  try:
+      with open(os.path.join('uploads', uploaded_file.name), 'wb') as f:
+        f.write(uploaded_file.getbuffer())
+      return 1
+  except:
+      return 0
+  
+def extract_features(img_path):
+    flat_data = []
+    #url = input('Enter image url : ')
+    img = imread(img_path)
+    img_resized = resize(img, (224, 224, 3))
+    flat_data.append(img_resized.flatten())
+    flat_data = np.array(flat_data)
+    return flat_data
 
 if __name__ == '__main__':
 
