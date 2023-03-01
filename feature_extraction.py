@@ -3,10 +3,16 @@ import os
 import numpy as np
 from PIL import Image
 import pickle
-import pathlib
 import tensorflow as tf
 from tensorflow.keras import preprocessing
 from tensorflow.keras import layers
+from skimage.io import imread
+from skimage.transform import resize
+from sklearn.model_selection import train_test_split
+
+target = []
+images = []
+flat_data = []
 
 #-----------Load the images----------#
 data_dir = 'data'
@@ -14,44 +20,31 @@ batch_size = 64
 img_height = 224
 img_width = 224
 
-# split the data for training and validation using keras's preprocessing
-train_data = preprocessing.image_dataset_from_directory(
-    data_dir,
-    validation_split=0.2,
-    subset ='training',
-    seed =123,
-    image_size = (img_height, img_width),
-    batch_size = batch_size
-)
+CATEGORIES = ['no_split', 'split']
 
-val_data = preprocessing.image_dataset_from_directory(
-    data_dir,
-    validation_split=0.2,
-    subset ='validation',
-    seed =123,
-    image_size = (img_height, img_width),
-    batch_size = batch_size
-) 
-print('\nClasses: ', train_data.class_names)
-# Cache the images
-AUTOTUNE = tf.data.AUTOTUNE
-train_data = train_data.cache().shuffle(3500).prefetch(buffer_size=AUTOTUNE)
-val_data = val_data.cache().prefetch(buffer_size=AUTOTUNE)
+for category in CATEGORIES:
+    class_num = CATEGORIES.index(category)
+    path = os.path.join(data_dir, category)
+    for img in os.listdir(path):
+        img_array = imread(os.path.join(path, img))
+        img_resized = resize(img_array, (img_height, img_width, 3))
+        flat_data.append(img_resized.flatten())
+        images.append(img_resized)
+        target.append(class_num)
 
-print('\nTrain Data: \n', train_data)
+flat_data = np.array(flat_data)
+target = np.array(target)
+images = np.array(images)
 
-# Normalizing the data
-normalization_layer = layers.experimental.preprocessing.Rescaling(1./255)
-normalized_train_data = train_data.map(lambda x, y: (normalization_layer(x), y))
-print('Normalized Training Data:\n')
-print(normalized_train_data)
+# Split the data into training and testing data
+x_train, x_test, y_train, y_test = train_test_split(flat_data, target, test_size=0.3, random_state=1234)
+print(x_train.shape)
+print(x_test.shape)
+print(y_train.shape)
+print(y_test.shape)
 
-image_batch, labels_batch = next(iter(normalized_train_data))
-print('Image batch :\n', image_batch)
-print('Labels batch :\n', labels_batch)
+train_test_files = [x_train, x_test, y_train, y_test]
 
-#-----------Store the data----------#
-# Store the normalized data as np file
-np.save('train_image_batch_data.npy', image_batch)
-np.save('train_labels_batch_data.npy', labels_batch)
-#np.save('val_data.npy', val_data)
+# Save the files
+with open('train_test_files.pkl', 'wb') as f:
+    pickle.dump(train_test_files, f)
