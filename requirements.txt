@@ -3,3 +3,6 @@ tensorflow
 sklearn
 matplotlib
 seaborn
+scikit-image
+streamlit
+pyngrok
