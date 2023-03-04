@@ -3,9 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# pkl files
-*.pkl
-
 # C extensions
 *.so
 
