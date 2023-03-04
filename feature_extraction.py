@@ -13,18 +13,27 @@ in the form of arrays
 
 class FlattenData:
 
-    def __init__(self, data_dir, batch_size=64, img_height=224, img_width=224):
+    def __init__(self, data_dir='data', batch_size=64, img_height=224, img_width=224):
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.img_height = img_height
         self.img_width = img_width
 
+    # Function to flatten the test image called in model_prediction.py
+    def flatten_image(self, url = input('>Enter Image URL (Local or web file): ')):
+        flat_data = []
+        img = imread(url)
+        img_resized = resize(img, (224, 224, 3))
+        flat_data.append(img_resized.flatten())
+        flat_data = np.array(flat_data)
+        return flat_data
 
-    # Function to flatten the data
+
+    # Function to flatten the data called in model_train.py
     def flatten_data(self):
         
-        target = []
-        flat_data = []
+        target = []         # Hold the labels
+        flat_data = []      # Holds the flattened data
 
         CATEGORIES = ['no_split', 'split']
         
