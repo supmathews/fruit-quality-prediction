@@ -19,6 +19,6 @@
   python model_prediction.py
   ```
 - Enter the url of the image in the terminal. The url can be a local path or a web address.
-![Screenshot](screenshot\how-to.jpg)
+![Screenshot](screenshot/how-to.jpg)
 
 
