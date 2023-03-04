@@ -1,4 +1,4 @@
-#-----------Libraries for feature extraction and training----------#
+#-----------Libraries for training----------#
 import pickle
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
